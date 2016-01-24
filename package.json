@@ -1,6 +1,6 @@
 {
   "name": "cumulus-cloud",
-  "version": "0.1.0",
+  "version": "0.1.0-alpha",
   "description": "Service cloud to share files into server.",
   "private": true,
   "main": "index.js",
@@ -10,6 +10,7 @@
   "dependencies": {
     "body-parser": "^1.14.2",
     "colors": "^1.1.2",
+    "compression": "^1.6.1",
     "express": "^4.13.4",
     "gm": "^1.21.1",
     "lodash": "^4.0.0",

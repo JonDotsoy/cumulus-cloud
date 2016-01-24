@@ -28,5 +28,26 @@ router.get("/list", function (req, res, next) {
 });
 
 
+router.get("/file/:idfile/:name?/info", function (req, res, next) {
+	var idfile = req.params.idfile;
+	Store.info(idfile).then(function (data) {
+		if (data) {
+			if (req.params.name != data.originalname) {
+				res.redirect(data.url_info);
+			}
+
+			res.json(data);
+		} else {
+			next()
+			// res.status(404).end("404 No Found.");
+		}
+	})
+	.catch(function (err) {
+		console.log(err.stack);
+		// res.json({error: err.message, stack:err.stack});
+		next();
+	})
+});
+
 
 module.exports = router;
