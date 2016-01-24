@@ -18,6 +18,7 @@ if (ENVisDevelop()) {
 
 
 loadRouter("/store", "store");
+loadRouter("/manager", "manager");
 
 
 

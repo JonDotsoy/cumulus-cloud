@@ -1,6 +1,7 @@
 
 var express = require("express");
 var bodyParser = require("body-parser");
+var Url = require("../services/url");
 var router = express.Router();
 var fs = require("fs");
 var path = require("path");
@@ -8,6 +9,9 @@ var Store = require("../services/store");
 var uuid = require("uuid");
 var multer = require("multer");
 var upload = multer({ dest: path.resolve(__dirname, "..", "..", "store") });
+var _ = require("lodash");
+var url = require("url");
+var urlencode = require("urlencode");
 
 
 router.get("/", function (req, res) {
@@ -36,61 +40,66 @@ router.get("/size", function (req, res) {
 	});
 });
 
-router.post("/update", upload.any(), function (req, res) {
-	// res.json({
-	// 	ok: true,
-	// 	file: req.file,
-	// 	files: req.files,
-	// 	body: req.body,
-	// });
+router.post("/upload", upload.any(), function (req, res, next) {
+
 	if (req.files) {
-		Store.define(req.files[0])
+		Promise.all(req.files.map(function (file) {
+			console.log(url.format(file.originalname));
+			file.originalname = urlencode.decode(file.originalname).replace(/[^a-z0-9]/i, "-");
+			return Store.define(file);
+		}))
 		.then(function (id) {
 			res.send(id);
 		});
 	} else {
-		res.status(404).end("404 No Found.");
+		next();
 	}
+
 });
 
-router.get("/file/:idfile/:name/info", function (req, res) {
+router.get("/file/:idfile/:name/info", function (req, res, next) {
 	var idfile = req.params.idfile;
 	Store.info(idfile).then(function (data) {
 		if (data) {
 			if (req.params.name != data.originalname) {
-				res.redirect("http://localhost/store/file/d99d2e5a-aca9-4c42-8b4e-177f2ef488bf/" + data.originalname + "/info");
+				res.redirect(data.url_info);
 			}
-
-			data.url = "http://localhost/store/file/d99d2e5a-aca9-4c42-8b4e-177f2ef488bf/" + data.originalname;
 
 			res.json(data);
 		} else {
-			res.status(404).end("404 No Found.");
+			next()
+			// res.status(404).end("404 No Found.");
 		}
 	})
 	.catch(function (err) {
-		res.json(err);
+		console.log(err.stack);
+		// res.json({error: err.message, stack:err.stack});
+		next();
 	})
 });
 
-router.get("/file/:idfile/:name", function (req, res) {
+router.get("/file/:idfile/:name?", function (req, res, next) {
 	var idfile = req.params.idfile;
 	Store.info(idfile).then(function (data) {
+		
 		if (data) {
 			if (req.params.name != data.originalname) {
-				res.redirect("http://localhost/store/file/d99d2e5a-aca9-4c42-8b4e-177f2ef488bf/" + data.originalname);
+				res.redirect(data.url);
 			}
 
 			res.set('Content-Type', data.mimetype);
 			res.sendFile(data.path);
-			// res.json(data);
 		} else {
-			res.status(404).end("404 No Found.");
+			// res.status(404).end("404 No Found.");
+			next();
 		}
+
 	})
 	.catch(function (err) {
-		res.json(err);
-	})
+		console.log(err.stack);
+		// res.json(err);
+		next();
+	});
 });
 
 
