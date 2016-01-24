@@ -1,0 +1,21 @@
+{
+  "name": "cumulus-cloud",
+  "version": "0.1.0",
+  "description": "Service cloud to share files into server.",
+  "private": true,
+  "main": "index.js",
+  "scripts": {},
+  "author": "",
+  "license": "owner",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "colors": "^1.1.2",
+    "express": "^4.13.4",
+    "gm": "^1.21.1",
+    "lodash": "^4.0.0",
+    "multer": "^1.1.0",
+    "redis": "^2.4.2",
+    "socket.io": "^1.4.4",
+    "uuid": "^2.0.1"
+  }
+}
