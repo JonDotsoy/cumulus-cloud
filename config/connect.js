@@ -1,7 +1,9 @@
 
 module.exports = {
 	redis: {
-		host: "192.168.99.100",
-		port: 16379 - 0,
+		// 192.168.99.100
+		host: ENV("REDIS_DB", "db"),
+		// 16379
+		port: ENV("REDIS_PORT", 6379),
 	},
 };

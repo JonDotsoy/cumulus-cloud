@@ -1,4 +1,9 @@
 
+app:
+    build: .
+    links:
+     - "db:db"
+
 db:
     image: redis
     ports:
