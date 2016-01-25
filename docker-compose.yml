@@ -1,0 +1,27 @@
+
+nginx:
+    image: nginx
+    volumes:
+     - "./test/nginx.conf:/etc/nginx/conf.d/default.conf"
+    ports:
+     - "10088:80"
+    links:
+     - "app:app"
+
+app:
+    build: .
+    links:
+     - "db:db"
+    ports:
+     - "10089:80"
+    environment:
+        NODE_ENV: 'production'
+        URL_SSL_SECURITY: 'false'
+        URL_PORT: '10088'
+        URL_HOST: '192.168.99.100'
+        REDIS_PORT: '6379'
+        REDIS_DB: 'db'
+        URL_PATHNAME: '/file'
+
+db:
+    image: redis
