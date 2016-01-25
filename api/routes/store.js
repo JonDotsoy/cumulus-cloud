@@ -45,7 +45,7 @@ router.post("/upload", upload.any(), function (req, res, next) {
 	if (req.files) {
 		Promise.all(req.files.map(function (file) {
 			console.log(url.format(file.originalname));
-			file.originalname = urlencode.decode(file.originalname).replace(/[^a-z0-9]/i, "-");
+			file.originalname = urlencode.decode(file.originalname).replace(/[^a-z0-9\.\-]/i, "-");
 			file.created = new Date();
 
 			if (file.mimetype.search(/^image/i) == 0) {
