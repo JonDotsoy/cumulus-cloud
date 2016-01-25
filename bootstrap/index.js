@@ -49,4 +49,4 @@ var server = app.listen(80, function () {
 	if (address.family == "IPv6") {
 		console.log("Server is Open: " + host.green);
 	}
-})
+});
