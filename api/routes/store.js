@@ -15,13 +15,27 @@ var urlencode = require("urlencode");
 var gm = require("gm");
 
 
-router.get("/", function (req, res) {
-	res.send([
-		"Help api:",
-		"\tlist",
-		"\t\t\tShow all files",
-	].map(function (e) {return "<div>"+e.replace(/\t/g,"&nbsp;".repeat(4))+"</div>"}).join("\n"));
-});
+// router.get("/", function (req, res) {
+// 	res.send([
+// 		"Help api:",
+// 		"\tlist",
+// 		"\t\t\tShow all files",
+// 	].map(function (e) {return "<div>"+e.replace(/\t/g,"&nbsp;".repeat(4))+"</div>"}).join("\n"));
+// });
+
+
+var parseInfoFilePublic = function (data) {
+	return {
+		id: data.id,
+		url: data.url,
+		url_info: data.url_info,
+		mimetype: data.mimetype,
+		size: data.size,
+		sizeImage: data.sizeImage,
+		created: data.created,
+	};
+}
+
 
 
 // router.get("/list", function (req, res) {
@@ -43,6 +57,7 @@ router.get("/size", function (req, res) {
 
 router.post("/upload", upload.any(), function (req, res, next) {
 	if (req.files) {
+
 		Promise.all(req.files.map(function (file) {
 			console.log(url.format(file.originalname));
 			file.originalname = urlencode.decode(file.originalname).replace(/[^a-z0-9\.\-]/i, "-");
@@ -51,28 +66,29 @@ router.post("/upload", upload.any(), function (req, res, next) {
 			if (file.mimetype.search(/^image/i) == 0) {
 				return new Promise(function (resolve, reject) {
 					gm(file.path)
-					.size(function (err, size) {
-						if (err) {
-							reject(err);
-						} else {
-							file.sizeImage = size;
-							Store.define(file)
-							.then(resolve)
-							.catch(reject);
-						}
-					});
+						.size(function (err, size) {
+							if (err) {
+								reject(err);
+							} else {
+								file.sizeImage = size;
+								Store.define(file)
+								.then(resolve)
+								.catch(reject);
+							}
+						});
 				});
 			} else {
 				return Store.define(file);
 			}
 		}))
-		.then(function (id) {
-			res.send(id);
+		.then(function (files) {
+			res.send(_.map(files, function (data) { return parseInfoFilePublic(data) }));
 		})
 		.catch(function (err) {
 			console.log(err.stack);
 			next();
 		});
+
 	} else {
 		next();
 	}
@@ -87,15 +103,7 @@ router.get("/file/:idfile/:name?/info", function (req, res, next) {
 				res.redirect(data.url_info);
 			}
 
-			res.json({
-				id: data.id,
-				url: data.url,
-				url_info: data.url_info,
-				mimetype: data.mimetype,
-				size: data.size,
-				sizeImage: data.sizeImage,
-				created: data.created,
-			});
+			res.json(parseInfoFilePublic(data));
 		} else {
 			next()
 			// res.status(404).end("404 No Found.");

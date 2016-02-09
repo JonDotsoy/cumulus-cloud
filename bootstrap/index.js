@@ -42,7 +42,7 @@ loadRouter("/manager", "manager");
 
 
 
-var server = app.listen(80, function () {
+var server = app.listen(ENV("PORT", 80), function () {
 	var address = server.address();
 	var host = "http://[" + ((address.address == "::") ? "::1" : address.address) + "]:" + address.port;
 

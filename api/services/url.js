@@ -6,6 +6,7 @@ var path = ENV("URL_PATHNAME", "/store/file");
 var url = require("url");
 
 var generateURL = (function generateURL (ssl, host, port, path, idfile, fileName, sufix) {
+	ssl = ssl.toString();
 	return url.format({
 		protocol: (ssl === "auto") ? false : (ssl.toLowerCase() == "true") ? "https" : "http",
 		hostname: host,
