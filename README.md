@@ -1,5 +1,5 @@
-cumulus cloud :cloud: :zap: :arrow_right: :link:
-================================================
+cumulus cloud :rocket: :link:
+=============================
 
 ![comulus.cloud()](doc/logo/cumulus.cloud.png)
 
