@@ -13,7 +13,7 @@ var loadRouter = function (_path, name) {
 
 
 global.ENV = function (name, defaultValue) { return _.get(process.env, name, defaultValue); }
-global.ENVisDevelop = function () { return (ENV("NODE_ENV", "develop") === "develop"); }
+global.ENVisDevelop = function () { return (ENV("NODE_ENV", "develop") === "develop" || ENV("NODE_ENV", "develop") === "development"); }
 
 if (ENVisDevelop()) {
 	app.set('json spaces', 4);
