@@ -1,6 +1,6 @@
 {
   "name": "cumulus-cloud",
-  "version": "0.2.0-alpha.0",
+  "version": "0.2.1-alpha.0",
   "description": "Service cloud to share files into server.",
   "private": true,
   "main": "index.js",
